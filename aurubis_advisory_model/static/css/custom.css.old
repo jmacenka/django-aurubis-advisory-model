@@ -1,0 +1,41 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+
+#content-wrapper {
+    flex: 1;
+    position: relative;
+    z-index: 1; /* Ensures content inside content-wrapper stays above the pseudo-element */
+}
+
+#content-wrapper::before {
+    content: ""; /* Mandatory for the pseudo-element to show */
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(50%) saturate(20%);
+
+    /* The pseudo-element will cover the entire #content-wrapper */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    /* Send the pseudo-element to the background */
+    z-index: -1;
+}
+
+.card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow for depth */
+}
+
+.card-body {
+    padding: 30px;  /* Increase this value to give more padding. Adjust as needed. */
+}

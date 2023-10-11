@@ -1,0 +1,27 @@
+{% extends 'base_form.html' %}
+{% load bootstrap %}
+
+{% block title %} Register - Aurubis Advisory Model {% endblock %}
+
+{% block form_content %}
+
+<h1>Register as a new User</h1>
+
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|bootstrap }}
+    <button type="submit" class="btn btn-primary mt-3">Register</button>
+</form>
+{% endblock %}

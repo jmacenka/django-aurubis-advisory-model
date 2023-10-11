@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block content %}
+<div class="row justify-content-center container">
+    <div class="col-md-6">
+        <div class="card rounded">
+            <div class="card-body">
+                {% block form_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
