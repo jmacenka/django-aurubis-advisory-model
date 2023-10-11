@@ -1,0 +1,55 @@
+{% extends "base_list.html" %}
+{% load bootstrap %}
+
+{% block list_content %}
+
+    <h2>Charge List</h2>
+    <!-- page scrolling -->
+    <span>
+        <a href="{% url 'charge_list_page' previous_page %}" class="btn btn-check">
+            <span><</span> Previous Page
+        </a>
+        Page {{ current_page }}
+        <a href="{% url 'charge_list_page' next_page %}" class="btn btn-check">
+            Next Page <span>></span>
+        </a>
+    </span>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Charge Number</th>                
+                <th scope="col">Start Time</th>
+                <th scope="col">End Time</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- List existing entries -->
+            {% for charge in charges %}
+            <tr>
+                <td>{{ charge.number }}</td>
+                <td>{{ charge.start_time }}</td>
+                <td>{{ charge.end_time }}</td>
+                <td>
+                    <a href="{% url 'update_charge' charge.id %}" class="btn btn-warning">UPDATE</a>
+                    <a href="{% url 'delete_charge' charge.id %}" class="btn btn-danger">DELETE</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No Charges found.</td>
+            </tr>
+            {% endfor %}
+            <!-- Add new entry -->
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="{% url 'add_charge' %}" class="btn btn-primary">Add New Charge</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock %}

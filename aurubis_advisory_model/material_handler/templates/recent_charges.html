@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>5 Most Recent Charges</h2>
+    <table>
+        <thead>
+            <tr>
+                {% for charge in charges %}
+                <th>{{ charge.start_time }} to {{ charge.end_time }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example row for charge number; add similar rows for other attributes -->
+            <tr>
+                {% for charge in charges %}
+                <td>
+                    {% if forloop.first %}  <!-- If it's the first (most recent) charge, make it editable -->
+                    <input type="text" value="{{ charge.number }}">
+                    {% else %}
+                    {{ charge.number }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            <!-- Add more rows for other fields as needed -->
+        </tbody>
+    </table>
+
+    <!-- Add an update button for the most recent charge -->
+    {% if charges %}
+    <form method="post" action="{% url 'update_charge' charges.0.id %}">
+        {% csrf_token %}
+        <!-- Add hidden fields for each attribute of the most recent charge you wish to update -->
+        <button type="submit">Update</button>
+    </form>
+    {% endif %}
+{% endblock %}

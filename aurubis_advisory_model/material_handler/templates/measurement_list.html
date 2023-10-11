@@ -1,0 +1,65 @@
+{% extends "base_list.html" %}
+
+{% block list_content %}
+    <h1>{{ title }}</h1>
+
+    <!-- Form for charge filter -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <select name="charge_filter" class="form-control">
+                <option value="">Select a Charge</option>
+                {% for charge in charges %}
+                    <option value="{{ charge.number }}" {% if selected_charge == charge.number %}selected{% endif %}>
+                        ({{ charge.number }}) {{ charge.start_time|date:"Y-m-d H:i" }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Charge Number</th>                
+                <th scope="col">Source</th>
+                <th scope="col">Timestamp</th>
+                <!-- <th scope="col">Composition</th> -->
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for measurement in measurements %}
+            <tr>
+                <td>{{ measurement.charge }}</td>
+                <td>{{ measurement.source }}</td>
+                <td>{{ measurement.timestamp }}</td>
+                <!-- <td>Composition</td> -->
+                <td>
+                    <a href="{% url 'update_measurement' measurement.id %}" class="btn btn-warning">UPDATE</a>
+                    <a href="{% url 'delete_measurement' measurement.id %}" class="btn btn-danger">DELETE</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No Measurements found.</td>
+            </tr>
+            {% endfor %}
+            <!-- Form for creating a new measurement -->
+            <form method="post" action="{% url 'add_measurement' %}">
+                <tr>
+                    {% csrf_token %}
+                    <!-- <td>{{ form.charge|slice:"1" }}</td> -->
+                    <td>{{ form.charge }}</td>
+                    <td>{{ form.source }}</td>
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">CREATE</button>
+                    </td>
+                </tr>            
+            </form>
+        </tbody>
+    </table>
+{% endblock %}

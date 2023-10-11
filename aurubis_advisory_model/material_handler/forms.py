@@ -1,5 +1,5 @@
 from django import forms
-from .models import Material
+from .models import Material, Charge, Ingredient, Measurement
 
 class BaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -14,4 +14,29 @@ class BaseForm(forms.ModelForm):
 class MaterialForm(BaseForm):
     class Meta:
         model = Material
-        fields = '__all__'  # This would include all fields, but the BaseForm will exclude the specified ones
+        fields = '__all__'
+
+class ChargeForm(BaseForm):
+    class Meta:
+        model = Charge
+        fields = '__all__'
+
+class NewChargeForm(BaseForm):
+    class Meta:
+        model = Charge
+        fields = ['number', 'start_time']
+
+class IngredientForm(BaseForm):
+    class Meta:
+        model = Ingredient
+        fields = '__all__'
+
+class MeasurementForm(BaseForm):
+    class Meta:
+        model = Measurement
+        fields = '__all__'
+
+    timestamp = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'class': 'datetimepicker'}),
+        required=True
+    )

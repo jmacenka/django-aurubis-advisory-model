@@ -8,16 +8,16 @@
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav ml-auto"> <!-- ml-auto pushes nav items to the right -->
+            {% if user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_users' %}">User Management</a>
+                </li>
+            {% endif %}
             {% if user.is_authenticated %}
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'home' %}">Advisor Model</a>
             </li>
             {% include 'components/_material_handler_navelement.html' %}            
-                {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'manage_users' %}">User Management</a>
-                    </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>

@@ -1,21 +1,22 @@
-{% extends 'base.html' %}
+{% extends 'base_form.html' %}
 {% load bootstrap %}
 
-{% block content %}
-    <div class="container mt-5">
-        <div class="row justify-content-center container">
-            <div class="col-md-6">
-                <div class="card rounded">
-                    <div class="card-body">                    
-                        <h2 class="mb-4">{{ title }}</h2>
-                        <form method="post">
-                            {% csrf_token %}
-                            {{ form|bootstrap }}
-                            <button type="submit" class="btn btn-primary">{{ button_label }}</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block form_content %}
+    <h2 class="mb-4">{{ title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit" class="btn btn-primary">{{ button_label }}</button>
+    </form>
+{% endblock %}
+
+{% block additional_js %}
+<!-- Initialize the datetime picker -->
+<script type="text/javascript">
+$(function () {
+    $('#datetimepicker').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm:ss'
+    });
+});
+</script>
 {% endblock %}

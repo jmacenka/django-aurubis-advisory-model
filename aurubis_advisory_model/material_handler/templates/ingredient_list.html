@@ -1,0 +1,65 @@
+{% extends 'base_list.html' %}
+
+{% block list_content %}
+    <h2>Ingredient List</h2>
+
+    <!-- Form for charge filter -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <select name="charge_filter" class="form-control">
+                <option value="">Select a Charge</option>
+                {% for charge in charges %}
+                    <option value="{{ charge.number }}" {% if selected_charge == charge.number %}selected{% endif %}>
+                        ({{ charge.number }}) {{ charge.start_time|date:"Y-m-d H:i" }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Charge</th>
+                <th scope="col">Material</th>
+                <th scope="col">Phase</th>
+                <th scope="col">Tonnage</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.charge }}</td>
+                <td>{{ ingredient.material }}</td>
+                <td>{{ ingredient.phase }}</td>
+                <td>{{ ingredient.tonnage }}</td>
+                <td>
+                    <a href="{% url 'update_ingredient' ingredient.id %}" class="btn btn-warning">Update</a>
+                    <a href="{% url 'delete_ingredient' ingredient.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No ingredients found.</td>
+            </tr>
+            {% endfor %}
+            <!-- Form for creating a new ingredient -->
+            <form method="post" action="{% url 'add_ingredient' %}">
+                <tr>
+                    {% csrf_token %}
+                    <td>{{ form.charge }}</td>
+                    <td>{{ form.material }}</td>
+                    <td>{{ form.phase }}</td>
+                    <td>{{ form.tonage }}</td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">CREATE</button>
+                    </td>
+                </tr>            
+            </form>
+        </tbody>
+    </table>
+{% endblock %}

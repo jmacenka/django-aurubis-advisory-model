@@ -3,13 +3,19 @@ from django.conf import settings
 
 IngredientPhaseChoices = [
     ('Kalteinsatz', 'Kalteinsatz'),
-    ('Nachgesetzt_Oxidieren', 'Nachgesetzt_Oxidieren'),
-    ('Nachgesetzt_Reduzieren_u_Gießen', 'Nachgesetzt_Reduzieren_u_Gießen'),
+    ('Nachgesetzt_Oxidieren', 'Nachgesetzt während Oxidieren'),
+    ('Nachgesetzt_Reduzieren_u_Gießen', 'Nachgesetzt während Reduzieren und Gießen'),
+    ('other', 'Andere nicht aufgelistete'),
 ]
 
 MeasurementChoices = [
-    ('Source1', 'Source1'),
-    ('Source2', 'Source2'),
+    ('KRS_Fluss_sehr_fett', 'KRS-Fluss sehr fett'),
+    ('KRS_Fluss_normal', 'KRS-Fluss normal'),
+    ('TBRC_Fluss_normal', 'TBRC-Fluss normal'),
+    ('TBRC_Fluss_CuNi', 'TBRC-Fluss CuNi'),
+    ('WHO2_Fluss_Normal', 'WHO2-Fluss Normal'),
+    ('WHO2_Fluss_CuNi', 'WHO2-Fluss CuNi'),
+    ('other', 'Andere nicht aufgelistete'),
 ]
 
 class BaseModel(models.Model):
@@ -23,8 +29,11 @@ class BaseModel(models.Model):
 
 class Charge(BaseModel):
     number = models.IntegerField()
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'({self.number}) {self.start_time.date()}' if self.start_time else f"({self.number})"
 
 class Material(BaseModel):
     number = models.IntegerField()
@@ -40,18 +49,24 @@ class Material(BaseModel):
     Zn = models.DecimalField(max_digits=5, decimal_places=2)
     Fe = models.DecimalField(max_digits=5, decimal_places=2)
 
+    def __str__(self):
+        return f'({self.number}) {self.name}'
+
 class Ingredient(BaseModel):
-    PHASE_CHOICES = IngredientPhaseChoices
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    tonnage = models.DecimalField(max_digits=8, decimal_places=2)
-    phase = models.CharField(max_length=50, choices=PHASE_CHOICES)
     charge = models.ForeignKey(Charge, on_delete=models.CASCADE)
+    PHASE_CHOICES = IngredientPhaseChoices
+    phase = models.CharField(max_length=50, choices=PHASE_CHOICES)
+    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    tonnage = models.IntegerField()
+
+    def __str__(self):
+        return f'({self.charge}) {self.phase} {self.tonnage}kg {self.material}'
 
 class Measurement(BaseModel):
     charge = models.ForeignKey(Charge, on_delete=models.CASCADE)
     SOURCE_CHOICES = MeasurementChoices
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES)
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(null=True, blank=True)
     Cu = models.DecimalField(max_digits=5, decimal_places=2)
     Sn = models.DecimalField(max_digits=5, decimal_places=2)
     Pb = models.DecimalField(max_digits=5, decimal_places=2)
@@ -62,3 +77,6 @@ class Measurement(BaseModel):
     Bi = models.DecimalField(max_digits=5, decimal_places=2)
     Zn = models.DecimalField(max_digits=5, decimal_places=2)
     Fe = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f'({self.charge}) {self.timestamp.strftime("%Y-%m-%d %H:%M")} {self.source}'
