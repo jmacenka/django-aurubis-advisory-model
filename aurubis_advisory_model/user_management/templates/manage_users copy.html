@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Manage Users</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Pending Users</h4>
+            <ul class="list-group">
+            {% for user in pending_users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ user.username }}
+                    <div>
+                        <!-- Button to activate user -->
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="activate_user" value="{{ user.pk }}">
+                            <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                        </form>
+            
+                        <!-- Button to delete user -->
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_user" value="{{ user.pk }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Active Users</h4>
+            <ul class="list-group">
+            {% for user in active_users %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ user.username }}
+                    <div>
+                        <!-- Button to deactivate user -->
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="deactivate_user" value="{{ user.pk }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
+                        </form>
+                        
+                        <!-- Button to remove admin rights, but not for superusers -->
+                        {% if user.is_staff and not user.is_superuser %}
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="demote_user" value="{{ user.pk }}">
+                            <button type="submit" class="btn btn-warning btn-sm">Remove Admin</button>
+                        </form>
+                        {% endif %}
+
+                        <!-- Button to grant admin rights -->
+                        {% if not user.is_staff %}
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="promote_user" value="{{ user.pk }}">
+                            <button type="submit" class="btn btn-primary btn-sm">Make Admin</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,13 +6,15 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav ml-auto"> <!-- ml-auto pushes nav items to the right -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav navbar-right ml-auto"> <!-- Added ml-auto class here -->
             {% if user.is_authenticated %}
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'home' %}">Advisor Model</a>
             </li>
-            {% include 'components/_material_handler_navelement.html' %}            
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'material_handler_home' %}">Material Handler</a>
+            </li>            
                 {% if user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'manage_users' %}">User Management</a>
@@ -23,12 +25,13 @@
                 </li>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="nav-link" href="{% url 'register' %}">Register</a>
                 </li>
             {% endif %}
         </ul>
     </div>
 </nav>
+

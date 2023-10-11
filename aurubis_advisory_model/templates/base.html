@@ -17,11 +17,11 @@
 {% include 'components/_navbar.html' %}
 
 <!-- Content Wrapper with background image -->
-<div id="content-wrapper">
+<div id="content-wrapper" class="py-4">
 
     <!-- Messages -->
     {% if messages %}
-    <div class="container mt-3">
+    <div class="container">
         {% for message in messages %}
         <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
             {{ message }}
@@ -41,7 +41,7 @@
 {% include 'components/_footer.html' %}
 
 <!-- JavaScript -->
-<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery-3.3.1.slim.min.js' %}"></script>
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 

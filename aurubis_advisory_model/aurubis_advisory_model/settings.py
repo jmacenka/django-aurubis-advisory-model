@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = 'user_management.login'
 
 # Application definition
 
@@ -51,8 +52,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # Self build middleware
+    'material_handler.middleware.MaterialHandlerLoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'aurubis_advisory_model.urls'
