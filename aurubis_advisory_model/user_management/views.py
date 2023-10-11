@@ -37,7 +37,12 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect('home')  # or wherever you want to redirect after login
+                    # Check if 'next' parameter is in the request
+                    next_url = request.GET.get('next')
+                    if next_url:  # if 'next' parameter exists, redirect to its value
+                        return redirect(next_url)
+                    else:
+                        return redirect('home')  # if not, redirect to home
                 else:
                     messages.error(request, 'Your registration is still pending. Please wait for administrator approval.')
                     return redirect('login')
