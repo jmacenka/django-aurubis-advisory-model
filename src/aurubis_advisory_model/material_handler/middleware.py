@@ -1,5 +1,6 @@
 # material_handler/middleware.py
 
+from django.http import QueryDict
 from django.shortcuts import redirect
 from django.urls import reverse
 

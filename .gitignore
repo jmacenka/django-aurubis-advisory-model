@@ -172,3 +172,13 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+
+# Individual exculdes
+# By Jan Macenka @ 25 Sept 2023
+
+# Environment variables, there is an .env_EXAMPLE file to show the structure
+.env
+
+# Content of the user-database
+/src/frontend/instance/*
+/src/frontend/migrations/*

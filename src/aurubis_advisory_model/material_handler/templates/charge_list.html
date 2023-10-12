@@ -20,6 +20,7 @@
                 <th scope="col">Charge Number</th>                
                 <th scope="col">Start Time</th>
                 <th scope="col">End Time</th>
+                <th scope="col">Total Tonnage</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -30,6 +31,11 @@
                 <td>{{ charge.number }}</td>
                 <td>{{ charge.start_time }}</td>
                 <td>{{ charge.end_time }}</td>
+                <td>
+                    <a href="{% url 'ingredient_list' %}?charge_filter={{ charge.number }}">
+                        {{ charge.total_tonnage }}
+                    </a>
+                </td>
                 <td>
                     <a href="{% url 'update_charge' charge.id %}" class="btn btn-warning">UPDATE</a>
                     <a href="{% url 'delete_charge' charge.id %}" class="btn btn-danger">DELETE</a>
@@ -42,6 +48,7 @@
             {% endfor %}
             <!-- Add new entry -->
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

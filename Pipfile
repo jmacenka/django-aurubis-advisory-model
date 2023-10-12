@@ -8,6 +8,7 @@ django = "*"
 django-bootstrap-form = "*"
 django-bootstrap4 = "*"
 pytz = "*"
+bootstrap4 = "*"
 
 [dev-packages]
 

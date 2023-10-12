@@ -2,6 +2,7 @@ from .models import Charge, Ingredient, Measurement, Material
 from .forms import ChargeForm, NewChargeForm, IngredientForm, MeasurementForm, MaterialForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.db.models import Sum
 
 display_count = 8
 
@@ -11,7 +12,11 @@ def charge_list(request, page_to_display:int=1):
     # Calculate pagination elements to display
     from_element = (page_to_display - 1) * max(display_count,1)
     to_element = page_to_display * display_count
-    charges = Charge.objects.all().order_by('-start_time')[from_element:to_element]
+
+    # Annotate charges with the total tonnage of their ingredients
+    charges = Charge.objects.annotate(
+        total_tonnage=Sum('ingredient__tonnage')
+    ).order_by('-start_time')[from_element:to_element]
 
     context = {
         'current_page': page_to_display,
@@ -43,7 +48,7 @@ def add_charge(request):
             initial_number = 1
 
         initial_form_data = {
-            'start_time': timezone.now().strftime('%Y-%m-%d %H:%M'),
+            'start_time': timezone.now(),#.strftime(TIMESTAMP_FORMAT),
             'number': initial_number,
         }
         form = NewChargeForm(initial=initial_form_data)
@@ -147,12 +152,13 @@ def delete_material(request, material_id):
 
 # Measurement Views
 def measurement_list(request):
-    measurements = Measurement.objects.all()
     charge_filter = request.GET.get('charge_filter', '')
 
     # Filter measurements by charge if specified
     if charge_filter:
-        measurements = measurements.filter(charge__number=charge_filter)
+        measurements = Measurement.objects.all().filter(charge__number=charge_filter)
+    else:
+        measurements = Measurement.objects.all()
 
     # Handle form submission for new measurement creation
     if request.method == 'POST':
@@ -164,7 +170,7 @@ def measurement_list(request):
             return redirect('update_measurement', measurement_id=new_measurement.id)
     else:
         initial_form_data = {
-            'timestamp': timezone.now().strftime('%Y-%m-%d %H:%M'),
+            'timestamp': timezone.now(),#.strftime(TIMESTAMP_FORMAT),
             'charge': charge_filter
         }
         form = MeasurementForm(initial=initial_form_data)
@@ -188,7 +194,7 @@ def add_measurement(request):
             return redirect('measurement_list')
     else:
         initial_form_data = {
-            'timestamp': timezone.now().strftime('%Y-%m-%d %H:%M')
+            'timestamp': timezone.now(),#.strftime(TIMESTAMP_FORMAT)
         }
         form = MeasurementForm(initial=initial_form_data)
 
@@ -235,31 +241,13 @@ def delete_measurement(request, measurement_id):
 
 # Ingeredient views
 def ingredient_list(request):
-    ingredients = Ingredient.objects.all()
-    charge_filter = request.GET.get('charge_filter','')
-
-    charges = Charge.objects.all().order_by('-start_time')
-    # Filter ingredients by selected charge if charge_filter is provided
-    if charge_filter:
-        ingredients = ingredients.filter(charge__number=charge_filter)
-
-    context = {
-        'ingredients': ingredients,
-        'selected_charge': charge_filter,
-        'charges': charges,  # For the dropdown
-        'charge_filter': charge_filter,
-    }
-
-    return render(request, 'ingredient_list.html', context)
-
-
-def ingredient_list(request):
-    ingredients = Ingredient.objects.all()
-    ingredient_filter = request.GET.get('ingredient_filter', '')
+    charge_filter = request.GET.get('charge_filter', '')
 
     # Filter ingredients by ingredient if specified
-    if ingredient_filter:
-        ingredients = ingredients.filter(ingredient__number=ingredient_filter)
+    if charge_filter:
+        ingredients = Ingredient.objects.all().filter(charge__number=charge_filter)
+    else:
+        ingredients = Ingredient.objects.all()
 
     # Handle form submission for new ingredient creation
     if request.method == 'POST':
@@ -268,20 +256,22 @@ def ingredient_list(request):
             new_ingredient = form.save(commit=False)
             new_ingredient.created_by = request.user
             new_ingredient.save()
-            return redirect('update_ingredient', ingredient_id=new_ingredient.id)
+            # Return the response and preserve the charge_filter parameter
+            response = redirect('ingredient_list')
+            response['Location'] += f'?charge_filter={charge_filter}'
+            return response
     else:
         initial_form_data = {
-            # 'timestamp': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'ingredient': ingredient_filter
+            'charge': charge_filter,
         }
         form = IngredientForm(initial=initial_form_data)
 
     context = {
         'ingredients': ingredients,
         'form': form,
-        'ingredients': Ingredient.objects.all(),  # For the dropdown
-        'ingredient_filter': ingredient_filter,
-        'title': 'Ingredient List'
+        'charges': Charge.objects.all().order_by('-start_time'),  # For the dropdown,
+        'charge_filter': charge_filter,
+        'title': 'Ingredient List',
     }
     return render(request, 'ingredient_list.html', context)
 
@@ -319,7 +309,8 @@ def update_ingredient(request, ingredient_id):
     context = {
         'form': form,
         'title': 'Update Ingredient',
-        'button_label': 'Update'
+        'button_label': 'Update',
+        'return_view': 'ingredient_list',
     }
     return render(request, 'form_template.html', context)
 
