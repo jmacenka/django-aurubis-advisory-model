@@ -9,6 +9,8 @@ django-bootstrap-form = "*"
 django-bootstrap4 = "*"
 pytz = "*"
 bootstrap4 = "*"
+django-plotly-dash = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
