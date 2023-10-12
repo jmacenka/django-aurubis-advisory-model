@@ -4,8 +4,6 @@ body {
     min-height: 100vh;
 }
 
-
-
 #content-wrapper {
     flex: 1;
     position: relative;

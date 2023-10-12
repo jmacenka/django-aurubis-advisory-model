@@ -20,9 +20,9 @@ MeasurementChoices = [
 
 class BaseModel(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_created_by', on_delete=models.CASCADE)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='%(app_label)s_%(class)s_created_by', on_delete=models.SET_NULL)
     date_modified = models.DateTimeField(auto_now=True)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_modified_by', null=True, blank=True, on_delete=models.CASCADE)
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='%(app_label)s_%(class)s_modified_by', null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         abstract = True

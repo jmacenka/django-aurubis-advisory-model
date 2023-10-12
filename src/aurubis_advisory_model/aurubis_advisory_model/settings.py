@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from config import (
+    SECRET_KEY,
+    TIMEZONE,
+)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jj^9w+zlk3k0bfalv@ja_xp&wkl)e-m+l6mn^1m3ur#aav@&r)'
+#SECRET_KEY = 'django-insecure-jj^9w+zlk3k0bfalv@ja_xp&wkl)e-m+l6mn^1m3ur#aav@&r)' # => Imported from config which loads .env variables
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'   # Required for iframe embedding of Dash apps
 
 LOGIN_URL = 'user_management.login'
 
@@ -38,10 +45,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Functional code
     'user_management',
     'material_handler',
+    'dashboard',
+    # Needed libraries
     'bootstrap4',
     'bootstrapform',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'dpd_static_support',
+]
+
+# django_plotly_dash settings
+PLOTLY_COMPONENTS = [
+    'dash_core_components',
+    'dash_html_components',
+    'dash_renderer',
+    'dpd_components'
 ]
 
 MIDDLEWARE = [
@@ -56,6 +76,9 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     # Self build middleware
     'material_handler.middleware.MaterialHandlerLoginRequiredMiddleware',
+    # External library middleware
+    'django_plotly_dash.middleware.BaseMiddleware',
+    'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
 ]
 
 ROOT_URLCONF = 'aurubis_advisory_model.urls'
@@ -114,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Berlin'
+TIME_ZONE = TIMEZONE
 
 USE_I18N = True
 #USE_L10N = True
@@ -127,6 +150,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

@@ -182,3 +182,4 @@ cython_debug/
 # Content of the user-database
 /src/frontend/instance/*
 /src/frontend/migrations/*
+*/static_root/*

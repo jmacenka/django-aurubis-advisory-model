@@ -11,6 +11,11 @@ pytz = "*"
 bootstrap4 = "*"
 django-plotly-dash = "*"
 python-dotenv = "*"
+pandas = "*"
+pyyaml = "*"
+requests = "*"
+dash = "*"
+dpd-static-support = "*"
 
 [dev-packages]
 

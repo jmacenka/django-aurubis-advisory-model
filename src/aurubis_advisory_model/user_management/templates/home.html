@@ -1,19 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load plotly_dash %}
 
 {% block title %} Welcome - Aurubis Advisory Model {% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to Aurubis Advisory Model!</h1>
-    <p class="lead">Your leading source for advisory models and insights.</p>
-    <hr class="my-4">
-    {% if user.is_authenticated %}
-        <p>Welcome back, {{ user.username }}!</p>
-    {% else %}
+{% if user.is_authenticated %}
+
+{%load plotly_dash%}
+    <div class="dash-container" style="width:100%; height:100%;">
+        {%plotly_app name="aurubis_advisory_model" %}
+    </div>
+{% else %}
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to Aurubis Advisory Model!</h1>
+        <hr class="my-4">
         <p>Login or register to get started.</p>
-        <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
-        <a class="btn btn-secondary btn-lg ml-2" href="{% url 'register' %}" role="button">Register</a>
-    {% endif %}
-</div>
+            <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">Login</a>
+            <a class="btn btn-secondary btn-lg ml-2" href="{% url 'register' %}" role="button">Register</a>
+    </div>
+{% endif %}
+
 {% endblock %}
